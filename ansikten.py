@@ -1,4 +1,28 @@
 import random
+farger = {
+    "1": "\033[91m",  # röd
+    "2": "\033[92m",  # grön
+    "3": "\033[93m",  # gul
+    "4": "\033[94m",  # blå
+    "5": "\033[95m",  # magenta
+    "6": "\033[96m",  # cyan
+    "7": "\033[0m"    # ingen färg
+}
+vald_farg = ""
+
+farg_lista = [
+    "\033[91m",  # röd
+    "\033[92m",  # grön
+    "\033[93m",  # gul
+    "\033[94m",  # blå
+    "\033[95m",  # magenta
+    "\033[96m"   # cyan
+]
+def slumpa_farg():
+    return random.choice(farg_lista)
+
+def farglagg_ansikte(ansikte):
+    return vald_farg + ansikte + "\033[0m"
 
 # === FUNKTIONER FÖR ANSIKTEN ===
 
@@ -27,14 +51,17 @@ def slumpa_ansikte():
 def skriv_ut_kluster(bredd, hojd, ansikte):
     for rad in range(hojd):
         for kolumn in range(bredd):
-            print(ansikte, end="")
+            print(farglagg_ansikte(ansikte), end="")
         print()
 
 def skriv_ut_slumpkluster(bredd, hojd):
     for rad in range(hojd):
+        rad_text = ""
         for kolumn in range(bredd):
-            print(slumpa_ansikte(), end=" ")
-        print()
+            ansikte = slumpa_ansikte()
+            farg = slumpa_farg()
+            rad_text += farg + ansikte + "\033[0m" + " "
+        print(rad_text)
 
 
 # === MENYFUNKTIONER ===
@@ -106,7 +133,7 @@ def skapa_kluster():
 def visa_slump_ansikte():
     """Visar ett slumpmässigt ansikte."""
 
-    print("Slumpat ansikte:", slumpa_ansikte())
+    print("Slumpat ansikte:", farglagg_ansikte(slumpa_ansikte()))
 
 
 def visa_slumpkluster():
@@ -121,10 +148,31 @@ def visa_slumpkluster():
 
 # === HUVUDPROGRAM ===
 
+def valj_farg():
+    global vald_farg
+
+    print("\n--- VÄLJ FÄRG ---")
+    print("1. Röd")
+    print("2. Grön")
+    print("3. Gul")
+    print("4. Blå")
+    print("5. Magenta")
+    print("6. Cyan")
+    print("7. Ingen färg")
+
+    val = input("Välj färg: ")
+
+    if val in farger:
+        vald_farg = farger[val]
+    else:
+        print("Ogiltigt val, ingen färg används.")
+        vald_farg = "\033[0m"
+
+
 def huvudprogram():
-    """Huvudprogrammet som styr menyn och programflödet."""
     while True:
         print("\n--- ASCII-ANSIKTEN ---")
+        print("0. Välj färg")   # 👈 NY
         print("1. Skapa eget ansikte")
         print("2. Skapa kluster (samma ansikte)")
         print("3. Slumpa ett ansikte")
@@ -133,12 +181,14 @@ def huvudprogram():
 
         val = input("Välj: ")
 
-        if val == "1":
+        if val == "0":
+            valj_farg()
+        elif val == "1":
             skapa_eget_ansikte()
         elif val == "2":
             skapa_kluster()
         elif val == "3":
-            visa_slump_ansikte()
+            print("Slumpat ansikte:", farglagg_ansikte(slumpa_ansikte()))
         elif val == "4":
             visa_slumpkluster()
         elif val == "5":
@@ -149,50 +199,7 @@ def huvudprogram():
 
 
 # === EXTRA FUNKTIONER FÖR UTMANINGAR ===
-
-def farglagg_ansikte(ansikte, farg_kod):
-    """
-    Lägger till ANSI-färgkoder runt ett ansikte.
-
-    Parametrar:
-        ansikte (str): Ansiktet som ska färgläggas
-        farg_kod (str): ANSI-färgkod (t.ex. "\033[91m")
-
-    Returnerar:
-        str: Ansikte med färgkoder
-    """
-    # TODO: return farg_kod + ansikte + "\033[0m"
-    pass
-
-
-def spara_ansikte_till_json(ansikte, filnamn="sparade_ansikten.json"):
-    """Sparar ett ansikte till en JSON-fil."""
-    # TODO: Importera json
-    # TODO: Ladda befintlig lista, lägg till nytt ansikte, spara
-    pass
-
-
-def ladda_ansikten_fran_json(filnamn="sparade_ansikten.json"):
-    """Laddar sparade ansikten från en JSON-fil."""
-    # TODO: Använd json.load() och returnera listan
-    pass
-
-
-# === TURTLE-UTMANING (FÖR DIG MED TURTLE) ===
-
-def rita_ansikte_med_turtle(ogon, mun, ram):
-    """
-    EXTRA UTMANING: Ritar ett ansikte med Turtle-grafik istället för ASCII.
-    Detta är för de som har tillgång till Turtle-biblioteket.
-    """
-    # TODO: Importera turtle
-    # TODO: Skapa en turtle
-    # TODO: Rita två cirklar som ögon
-    # TODO: Rita en båge som mun
-    # TODO: Rita en cirkel som huvud (ram)
-    # TODO: turtle.done()
-    pass
-
+huvudprogram()
 
 # Starta programmet om filen körs direkt
 if __name__ == "__main__":
